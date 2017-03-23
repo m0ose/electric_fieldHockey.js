@@ -1,0 +1,22 @@
+# Local ignores, also see ~/.gitignore
+
+# Best practices?
+# .gitignore
+
+# A dir of old or temp files
+Attic/
+
+# The test page for es6-module-loader-dev.js & traceur.js
+# lib/test/
+
+etc/
+lib/
+# src/glx.js
+# test/apps/webgl.js
+test/lib/
+docs/
+asx.zip
+
+node_modules/
+npm-debug.log
+**/.DS_Store

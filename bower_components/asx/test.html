@@ -1,0 +1,24 @@
+<html>
+<head>
+  <title>asx</title>
+  <script src="etc/system.js"></script>
+  <!-- <script src="etc/three.js"></script> -->
+</script>
+</head>
+<body>
+  <script>
+    var app = document.location.search.substring(1) || 'app'
+    var loc
+    if (app.search('http:') >= 0 || app.search('https:') >= 0) {
+      loc = app
+    } else {
+      loc = `test/lib/${app}.js`
+    }
+    console.log('running', loc)
+    System.import(loc)
+  </script>
+  <div id='layers'> </div>
+  <!-- Misc tests -->
+  <!-- <canvas id="can" width="300" height="200"></canvas> -->
+</body>
+</html>

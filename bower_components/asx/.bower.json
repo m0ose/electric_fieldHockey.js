@@ -1,0 +1,15 @@
+{
+  "name": "asx",
+  "homepage": "https://github.com/backspaces/asx",
+  "version": "2.0.0",
+  "_release": "2.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.0",
+    "commit": "795432baaa14f780ddcff184f95b90fe6ae32ae8"
+  },
+  "_source": "https://github.com/backspaces/asx.git",
+  "_target": "^2.0.0",
+  "_originalSource": "https://github.com/backspaces/asx.git",
+  "_direct": true
+}
