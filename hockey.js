@@ -1,7 +1,7 @@
 
-import util from '../bower_components/asx/src/util.js'
-import DataSet from '../bower_components/asx/src/DataSet.js'
-import Animator from '../bower_components/asx/src/Animator.js'
+import util from './electric_fieldHockey.js/bower_components/asx/src/util.js'
+import DataSet from './electric_fieldHockey.js/bower_components/asx/src/DataSet.js'
+import Animator from './electric_fieldHockey.js/bower_components/asx/src/Animator.js'
 
 const EMPTY = 0
 const WALL = 1

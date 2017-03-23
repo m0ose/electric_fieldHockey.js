@@ -1,38 +1,14 @@
-
 <!doctype html>
-
 <html lang="en">
     <head>
         <meta charset="utf-8">
     </head>
     <body>
-        <!--<script src='../build/build.js'></script>
-        <script src="../lib/ml/ml.js"></script>-->
         <script type='module'>
           import HockeyModel from './hockey.js'
           window.model = new HockeyModel()
           document.body.appendChild(model.canvas)
           model.canvas.style.cssText="width: 100%; height:100; position:absolute; top: 0px; left: 0px;"
-        </script>
-        <script>
-        /*var sections = [ {x:0.01, y:0.01, w:0.49, h:0.98, label:'Positive'},
-          {x:0.51, y:0.01, w:0.48, h:0.98, label:'Negative'},
-        ]
-        window.staty = new AnyObj.AnyObject({divID:'canvasContainer', sections:sections})
-        staty.on('state', (state) => {
-          // console.log('state', state)
-          if (state === staty.states.choose_camera_done) {
-            staty.startStripeScan({frameDelay:500, doInverse:true})
-          } else if (state === staty.states.stripescan_done) {
-            staty.assign() // assign must be called after stripe scan. This is because sometimes we might just want the stripescan.
-          } else if (state === staty.states.assign_done) { // this gets fired whenever the assign phase is done, which is usally only at the beginning.
-            model.start()
-          } else if (state === staty.states.detect_done) { // this gets fired every time the detect phase is done. This can happen often because auto monitoring will call it
-            detectIsDone()
-          }
-        })
-        staty.chooseCamera()
-        */
         </script>
     </body>
 </html>
