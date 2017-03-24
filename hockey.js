@@ -36,7 +36,7 @@ export default class HockeyModel {
     this.anim = new Animator(this)
     this.anim.setRate(60)
     this.k = 1
-    this.dt = 18
+    this.dt = 15
     this.setup()
     this.levels = [
       this.initLevel1,
@@ -124,23 +124,28 @@ export default class HockeyModel {
     return hits
   }
 
-  computeNextPuckRungaKutta(k1, dt) {
-    let k2 = this.computeNextPuckEuler(k1, dt/2)
-    let tmpPuck = new Puck(k1.x, k1.y, k2.vx, k2.vy, k1.charge, k1.mass)
-    let k3 = this.computeNextPuckEuler(tmpPuck, dt/2)
-    let tmpPuck2 = new Puck(k1.x, k1.y, k3.vx, k3.vy, k1.charge, k1.mass)
-    let k4 = this.computeNextPuckEuler(tmpPuck2, dt)
-    let vx = (k1.vx + 2*k2.vx + 2*k3.vx + k4.vx)/6
-    let vy = (k1.vy + 2*k2.vy + 2*k3.vy + k4.vy)/6
-    let finalPuck = new Puck(k1.x + vx*dt, k1.y +vy*dt, vx, vy, k1.charge, k1.mass)
+  computeNextPuckRungaKutta(k0, dt) {
+    let k1 = this.computeNextPuckEuler(k0, dt, true)
+    let tmpPuck1 = new Puck(k0.x, k0.y, k0.vx + k1.vx, k0.vy + k1.vy, k0.charge, k0.mass)
+    let k2 = this.computeNextPuckEuler(tmpPuck1, dt/2, true)
+    let tmpPuck2 = new Puck(k0.x, k0.y, k0.vx + k2.vx, k0.vy + k2.vy, k0.charge, k0.mass)
+    let k3 = this.computeNextPuckEuler(tmpPuck2, dt/2, true)
+    let tmpPuck3 = new Puck(k0.x, k0.y, k0.vx + k3.vx, k0.vy + k3.vy, k1.charge, k1.mass)
+    let k4 = this.computeNextPuckEuler(tmpPuck3, dt, true)
+    let vx = k0.vx + (k1.vx + 2*k2.vx + 2*k3.vx + k4.vx)/6
+    let vy = k0.vy + (k1.vy + 2*k2.vy + 2*k3.vy + k4.vy)/6
+    let finalPuck = new Puck(k1.x + vx*dt, k1.y +vy*dt,  vx,  vy, k1.charge, k1.mass)
     return finalPuck
   }
 
-  computeNextPuckEuler(puck, dt) {
+  computeNextPuckEuler(puck, dt, forRunga = false) {
     let p = puck
     let [Fx, Fy] = this.computeForceAtPoint(p.x, p.y, p.charge)
     let [ax, ay] = [Fx / p.mass, Fy / p.mass]
-    let [vx, vy] = [p.vx + ax*dt , p.vy + ay*dt ]
+    let [vx, vy] = [ ax*dt ,  ay*dt ]
+    if (!forRunga) {
+      [vx, vy] = [ puck.vx + ax*dt , puck.vy + ay*dt ]
+    }
     let x = (ax*dt*dt/2) + p.vx*dt + p.x
     let y = (ay*dt*dt/2) + p.vy*dt + p.y
     let p2 = new Puck(x, y, vx, vy, p.charge, p.mass)
