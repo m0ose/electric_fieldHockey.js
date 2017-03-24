@@ -40,7 +40,8 @@ export default class HockeyModel {
     this.setup()
     this.levels = [
       this.initLevel1,
-      this.initLevel2
+      this.initLevel2,
+      this.initLevel3
     ]
     this.currentLevel = 0
     // start first level
@@ -182,7 +183,7 @@ export default class HockeyModel {
 
   // Levels
   initLevel1() {
-    var url = 'hockeyLevel1.png'
+    var url = 'levels/hockeyLevel1.png'
     this.loadArenaImage(url, ()=>{
       this.setup()
       this.addCharge(10, 200, 1)
@@ -197,13 +198,26 @@ export default class HockeyModel {
   }
 
   initLevel2() {
-    var url = 'hockeyLevel2.png'
+    var url = 'levels/hockeyLevel2.png'
     this.loadArenaImage(url, ()=>{
       this.setup()
       model.addCharge(10,170,1)
       model.addCharge(180,370,1)
       model.addCharge(380,20,1)
       model.addCharge(380,210,-1)
+      this.puckIsDead()
+      this.anim.start()
+    })
+  }
+
+  initLevel3() {
+    var url = 'levels/hockeyLevel3.png'
+    this.loadArenaImage(url, ()=>{
+      this.setup()
+      model.addCharge(334,265,1)
+      model.addCharge(165,140,-1)
+      model.addCharge(155,150,-1)
+      model.addCharge(135,170,-1)
       this.puckIsDead()
       this.anim.start()
     })
