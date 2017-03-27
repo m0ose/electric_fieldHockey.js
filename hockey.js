@@ -36,7 +36,7 @@ export default class HockeyModel {
     this.anim = new Animator(this)
     this.anim.setRate(60)
     this.k = 1
-    this.dt = 15
+    this.dt = 25
     this.setup()
     this.levels = [
       this.initLevel1,
@@ -214,10 +214,13 @@ export default class HockeyModel {
     var url = 'levels/hockeyLevel3.png'
     this.loadArenaImage(url, ()=>{
       this.setup()
-      model.addCharge(334,265,1)
-      model.addCharge(165,140,-1)
-      model.addCharge(155,150,-1)
-      model.addCharge(135,170,-1)
+      model.addCharge(345,290,1)
+    //  model.addCharge(165,140,-1)
+    //  model.addCharge(155,150,-1)
+      model.addCharge(185,210,-1)
+      model.addCharge(40,90,1)
+      model.addCharge(40,100,1)
+      // Credit for this solution goes to Emma Gould
       this.puckIsDead()
       this.anim.start()
     })
