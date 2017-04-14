@@ -22,7 +22,7 @@ class Puck {
 }
 
 class Charge {
-  constructor(x=0, y=0, value=1000) {
+  constructor(x=0, y=0, value=1) {
     this.x = x
     this.y = y
     this.value = value
@@ -41,7 +41,8 @@ export default class HockeyModel {
     this.levels = [
       this.initLevel1,
       this.initLevel2,
-      this.initLevel3
+      this.initLevel3,
+      this.initLevel0,
     ]
     this.currentLevel = 0
     // start first level
@@ -75,8 +76,13 @@ export default class HockeyModel {
   }
 
   step () {
-    let nextPuck = this.computeNextPuckRungaKutta(this.puck, this.dt)
-    let collisions = this.checkCollisions(this.puck, nextPuck)
+    // this.computeNextPuckRungaKutta(this.puck, this.dt)
+    let nextPuck = this.puck
+    let collisions
+    for( let i=0; i< 200; i++) {
+      nextPuck = this.computeNextPuckEuler(nextPuck, this.dt/200)
+      collisions = this.checkCollisions(this.puck, nextPuck)
+    }
     this.puck = nextPuck
     if (collisions.OUTERSPACE == true) {
       console.log('out in space somewhere')
@@ -125,20 +131,6 @@ export default class HockeyModel {
     return hits
   }
 
-  computeNextPuckRungaKutta(k0, dt) {
-    let k1 = this.computeNextPuckEuler(k0, dt, true)
-    let tmpPuck1 = new Puck(k0.x, k0.y, k0.vx + k1.vx, k0.vy + k1.vy, k0.charge, k0.mass)
-    let k2 = this.computeNextPuckEuler(tmpPuck1, dt/2, true)
-    let tmpPuck2 = new Puck(k0.x, k0.y, k0.vx + k2.vx, k0.vy + k2.vy, k0.charge, k0.mass)
-    let k3 = this.computeNextPuckEuler(tmpPuck2, dt/2, true)
-    let tmpPuck3 = new Puck(k0.x, k0.y, k0.vx + k3.vx, k0.vy + k3.vy, k1.charge, k1.mass)
-    let k4 = this.computeNextPuckEuler(tmpPuck3, dt, true)
-    let vx = k0.vx + (k1.vx + 2*k2.vx + 2*k3.vx + k4.vx)/6
-    let vy = k0.vy + (k1.vy + 2*k2.vy + 2*k3.vy + k4.vy)/6
-    let finalPuck = new Puck(k1.x + vx*dt, k1.y +vy*dt,  vx,  vy, k1.charge, k1.mass)
-    return finalPuck
-  }
-
   computeNextPuckEuler(puck, dt, forRunga = false) {
     let p = puck
     let [Fx, Fy] = this.computeForceAtPoint(p.x, p.y, p.charge)
@@ -182,6 +174,22 @@ export default class HockeyModel {
   }
 
   // Levels
+  initLevel0() {
+    var url = 'levels/hockeyLevel0.png'
+    this.loadArenaImage(url, ()=>{
+      this.setup()
+      this.puckIsDead = () => {
+        this.puck = new Puck(this.nestCentroid.x, this.nestCentroid.y)
+        this.puck.vx = 0.09
+        this.puck.vy = 0.05
+      }
+      this.puckIsDead()
+      this.addCharge(200, 150, -1.8)
+      this.anim.start()
+    })
+  }
+
+  // Levels
   initLevel1() {
     var url = 'levels/hockeyLevel1.png'
     this.loadArenaImage(url, ()=>{
@@ -192,6 +200,9 @@ export default class HockeyModel {
       this.addCharge(440, 110, -1)
       this.addCharge(460, 120, -1)
       this.addCharge(30, 240, 1)
+      this.puckIsDead = () => {
+        this.puck = new Puck(this.nestCentroid.x, this.nestCentroid.y)
+      }
       this.puckIsDead()
       this.anim.start()
     })
@@ -276,16 +287,19 @@ export default class HockeyModel {
   drawField () {
     let ctx = util.getContext(this.canvas)
     ctx.lineWidth = 0.5
-    for (let x = 0; x < this.arena.width; x += this.arena.width/15) {
-      for (let y = 0; y < this.arena.height; y += this.arena.height/15) {
-        let [Fx, Fy] = this.computeForceAtPoint(x, y, -1)
+    for (let x = 0; x < this.arena.width; x += this.arena.width/30) {
+      for (let y = 0; y < this.arena.height; y += this.arena.height/30) {
+        let [Fx, Fy] = this.computeForceAtPoint(x, y, 1)
         let mag = Math.hypot(Fx, Fy)
-        var headlen = 5;   // length of head in pixels
-        let tox = x + 20*Fx/mag
-        let toy = y + 20*Fy/mag
+        let length = 200000*mag
+        length = Math.min(20 , Math.max(4, Math.sqrt(length)) )
+        var headlen = Math.min(5,length/2);   // length of head in pixels
+        let tox = x + length*Fx/mag
+        let toy = y + length*Fy/mag
         var angle = Math.atan2(toy-y,tox-x);
         ctx.beginPath()
-        ctx.strokeStyle = `rgba(0,0,0,${2000*mag})`
+        let opacity = Math.min(1.0 , Math.max(0.2, 2000*mag) )
+        ctx.strokeStyle = `rgba(0,0,0,${opacity})`
         ctx.moveTo(x, y);
         ctx.lineTo(tox, toy);
         ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
@@ -354,7 +368,6 @@ export default class HockeyModel {
     return ds
   }
 }
-
 
 // util function
 function calcStraightLine (startX, startY, endX, endY) {
